@@ -6,6 +6,64 @@ POC of go time in location
 
 1. `GOOS=linux GOARCH=amd64 go install  -ldflags="-s -w" ./...`
 
+## POC
+
+```bash
+[root@app01 vagrant]# mv /usr/bin/rigaga /usr/bin/rigaga-bak
+[root@app01 vagrant]# cp /vagrant/gotimepoc /usr/bin/rigaga
+[root@app01 vagrant]# /vagrant/gotimepoc
+2020/08/04 13:04:48 env TZ:Asia/Shanghai
+2020/08/04 13:04:48 time.Local:Asia/Shanghai
+2020/08/04 13:04:48 Local Time:2020-08-04 13:04:48.384226731 +0800 CST m=+0.000089938
+2020/08/04 13:04:48 UTC Time:2020-08-04 05:04:48.38423532 +0000 UTC
+2020/08/04 13:04:48 Unix Seconds:1596517488
+2020/08/04 13:04:48 UnixNano:1596517488384240829
+UTC 2020/08/04 05:04:48 time.Local:Asia/Shanghai
+UTC 2020/08/04 05:04:48 Local Time:2020-08-04 13:04:48.384244641 +0800 CST m=+0.000107841
+UTC 2020/08/04 05:04:48 UTC Time:2020-08-04 05:04:48.384247826 +0000 UTC
+UTC 2020/08/04 05:04:48 Unix Seconds:1596517488
+UTC 2020/08/04 05:04:48 UnixNano:1596517488384251970
+^C
+[root@app01 vagrant]# service rigaga start
+Starting the process rigaga [ OK ]
+rigaga process was started [ OK ]
+[root@app01 vagrant]# tail -f /var/log/rigaga/rigaga.log
+2020/08/04 05:05:25 env TZ:
+2020/08/04 05:05:25 time.Local:Local
+2020/08/04 05:05:25 Local Time:2020-08-04 05:05:25.846327867 +0000 UTC m=+10.001344853
+2020/08/04 05:05:25 UTC Time:2020-08-04 05:05:25.846336081 +0000 UTC
+2020/08/04 05:05:25 Unix Seconds:1596517525
+2020/08/04 05:05:25 UnixNano:1596517525846342122
+UTC 2020/08/04 05:05:25 time.Local:Local
+UTC 2020/08/04 05:05:25 Local Time:2020-08-04 05:05:25.846346397 +0000 UTC m=+10.001363371
+UTC 2020/08/04 05:05:25 UTC Time:2020-08-04 05:05:25.846349571 +0000 UTC
+UTC 2020/08/04 05:05:25 Unix Seconds:1596517525
+UTC 2020/08/04 05:05:25 UnixNano:1596517525846354342
+^C
+[root@app01 vagrant]# ls -l /etc/localtime
+-rw-r--r--. 1 root root 118 5月   5 2014 /etc/localtime
+[root@app01 vagrant]# rm -f /etc/localtime
+[root@app01 vagrant]# ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+[root@app01 vagrant]# ls -l /etc/localtime
+lrwxrwxrwx 1 root root 33 8月   4 13:07 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
+[root@app01 vagrant]# service rigaga restart
+rigaga process is not running [ FAILED ]
+Starting the process rigaga [ OK ]
+rigaga process was started [ OK ]
+[root@app01 vagrant]# tail -f /var/log/rigaga/rigaga.log
+2020/08/04 13:08:02 env TZ:
+2020/08/04 13:08:02 time.Local:Local
+2020/08/04 13:08:02 Local Time:2020-08-04 13:08:02.408777281 +0800 CST m=+10.000302263
+2020/08/04 13:08:02 UTC Time:2020-08-04 05:08:02.408785165 +0000 UTC
+2020/08/04 13:08:02 Unix Seconds:1596517682
+2020/08/04 13:08:02 UnixNano:1596517682408791511
+UTC 2020/08/04 05:08:02 time.Local:Local
+UTC 2020/08/04 05:08:02 Local Time:2020-08-04 13:08:02.408795984 +0800 CST m=+10.000320962
+UTC 2020/08/04 05:08:02 UTC Time:2020-08-04 05:08:02.408799309 +0000 UTC
+UTC 2020/08/04 05:08:02 Unix Seconds:1596517682
+UTC 2020/08/04 05:08:02 UnixNano:159651768240880414
+```
+
 ## 关于UTC和CST
 
 [孙雪峰: 关于UTC和CST][1]
@@ -66,24 +124,5 @@ Write the system time into the hardware clock.
 `hwclock --systohc --localtime`
 
 Input `hwclock` to see the result.
-
-## gotimepoc
-
-```bash
-[vagrant@app01 ~]$ cat /etc/centos-release
-CentOS release 6.5 (Final)
-[root@app01 vagrant]# /vagrant_data/gotimepoc
-2020/08/04 12:21:57 env TZ:Asia/Shanghai
-2020/08/04 12:21:57 time.Local:Asia/Shanghai
-2020/08/04 12:21:57 Local Time: 2020-08-04 12:21:57.49982987 +0800 CST m=+0.000000291
-2020/08/04 12:21:57 UTC Time: 2020-08-04 04:21:57.499829986 +0000 UTC
-2020/08/04 12:21:57 Unix Seconds: 1596514917
-2020/08/04 12:21:57 UnixNano: 1596514917499830218
-UTC 2020/08/04 04:21:57 time.Local:Asia/Shanghai
-UTC 2020/08/04 04:21:57 Local Time: 2020-08-04 12:21:57.499834395 +0800 CST m=+0.000004818
-UTC 2020/08/04 04:21:57 UTC Time: 2020-08-04 04:21:57.499836808 +0000 UTC
-UTC 2020/08/04 04:21:57 Unix Seconds: 1596514917
-UTC 2020/08/04 04:21:57 UnixNano: 1596514917499839779
-```
 
 ![image](https://user-images.githubusercontent.com/1940588/89253930-8f696c00-d650-11ea-82fe-aad1882dceed.png)
