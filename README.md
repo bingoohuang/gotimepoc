@@ -25,9 +25,9 @@ POC of go time in location
 [1]: https://blog.csdn.net/snowin1994/article/details/77530033
 [2]: https://blog.csdn.net/V__KING__/article/details/79046976
 [3]: https://www.cyberciti.biz/faq/centos-linux-6-7-changing-timezone-command-line/
+[4]: https://www.vultr.com/docs/setup-timezone-and-ntp-on-centos-6
 
-
-# Change the current timezone in CentOS 6 and older
+## Change the current timezone in CentOS 6 and older
 
 [How To Change Timezone on a CentOS 6 and 7][3]
 
@@ -44,6 +44,26 @@ rm：是否删除普通文件 "/etc/localtime"？y
 [root@app01 vagrant]# ls -l /etc/localtime
 lrwxrwxrwx 1 root root 33 8月   4 12:36 /etc/localtime -> /usr/share/zoneinfo/Asia/Shanghai
 ```
+
+## write the system time info into the hardware clock.
+
+[Setup Timezone and NTP on CentOS 6][4]
+
+`vi /etc/sysconfig/clock`
+
+```
+ZONE="Asia/Shanghai"
+UTC=false
+ARC=false
+```
+
+Write the system time into the hardware clock.
+
+`hwclock --systohc --localtime`
+
+Input `hwclock` to see the result.
+
+## gotimepoc
 
 ```bash
 [vagrant@app01 ~]$ cat /etc/centos-release
