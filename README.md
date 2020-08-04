@@ -2,6 +2,10 @@
 
 POC of go time in location
 
+## Build
+
+1. `GOOS=linux GOARCH=amd64 go install  -ldflags="-s -w" ./...`
+
 ## 关于UTC和CST
 
 [孙雪峰: 关于UTC和CST][1]
